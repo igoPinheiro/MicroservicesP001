@@ -1,0 +1,30 @@
+version: '3.4'
+
+volumes:
+  mongo_data:
+
+networks:
+  catalog_net:
+   driver: bridge
+
+services:
+  catalagdb:
+    image: mongo
+    container_name: catalogdb
+    restart: always
+    ports:
+    - 27017:27017  
+    volumes:
+    - mongo_data:/data/db
+  
+  catalog.api:    
+    image: ${DOCKER_REGISTRY-}catalogapi
+    container_name: catalogo.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "DatabaseSettings__ConnectionString=mongodb://catalogdb:27017"
+    depends_on:
+      - catalagdb
+    build:
+      context: .
+      dockerfile: Catalog.API/Dockerfile
