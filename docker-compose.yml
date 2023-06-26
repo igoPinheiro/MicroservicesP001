@@ -12,14 +12,18 @@ services:
     image: mongo
     container_name: catalogdb
     restart: always
+    networks:
+      - catalog_net
     ports:
-    - 27017:27017  
+      - 27017:27017  
     volumes:
-    - mongo_data:/data/db
+      - mongo_data:/data/db
   
   catalog.api:    
     image: ${DOCKER_REGISTRY-}catalogapi
-    container_name: catalogo.api
+    container_name: catalogo.api   
+    networks:
+      - catalog_net
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "DatabaseSettings__ConnectionString=mongodb://catalogdb:27017"
