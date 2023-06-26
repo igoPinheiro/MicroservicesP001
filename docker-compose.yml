@@ -2,6 +2,8 @@ version: '3.4'
 
 volumes:
   mongo_data:
+  postgres_data:
+  #pgadmin_data:
 
 networks:
   catalog_net:
@@ -24,7 +26,14 @@ services:
     networks:
       - catalog_net
     ports:
-      - 6379:6379      
+      - 6379:6379    
+     
+  discountdb:
+    image: postgres:13
+
+  #pgadmin:
+  #  image: dpage/pgadmin4
+
   
   catalog.api:    
     image: ${DOCKER_REGISTRY-}catalogapi
@@ -53,4 +62,10 @@ services:
     build:
       context: .
       dockerfile: Basket.API/Dockerfile
+
+  discount.api:
+    image: ${DOCKER_REGISTRY-}discountapi
+    build:
+      context: .
+      dockerfile: Discount.API/Dockerfile
 
