@@ -5,19 +5,26 @@ volumes:
 
 networks:
   catalog_net:
-   driver: bridge
+    driver: bridge
 
 services:
   catalagdb:
     image: mongo
     container_name: catalogdb
-    restart: always
-    networks:
-      - catalog_net
+    restart: always    
     ports:
       - 27017:27017  
     volumes:
       - mongo_data:/data/db
+   
+  basketdb:
+    image: redis:alpine
+    container_name: basketdb
+    restart: always
+    networks:
+      - catalog_net
+    ports:
+      - 6379:6379      
   
   catalog.api:    
     image: ${DOCKER_REGISTRY-}catalogapi
@@ -32,3 +39,18 @@ services:
     build:
       context: .
       dockerfile: Catalog.API/Dockerfile
+
+  basket.api:
+    container_name: basket.api  
+    image: ${DOCKER_REGISTRY-}basketapi   
+    networks:
+      - catalog_net
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "CacheSettings__ConnectionString=basketdb:6379"
+    depends_on:
+      - basketdb
+    build:
+      context: .
+      dockerfile: Basket.API/Dockerfile
+
