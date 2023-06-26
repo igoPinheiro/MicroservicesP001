@@ -16,21 +16,28 @@ public class DiscountController : ControllerBase
     }
 
     [HttpGet("{productName}", Name = "GetDiscount")]
-    public async Task<IActionResult> Get(string productName)
-        => Ok(await _repository.GetDiscount(productName));
+    [ProducesResponseType(typeof(Coupon), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetDiscount(string productName)
+    {
+       return Ok(await _repository.GetDiscount(productName));
+
+    }
 
     [HttpPost(Name ="CreateDiscount")]
+    [ProducesResponseType(typeof(Coupon), StatusCodes.Status200OK)]
     public async Task<IActionResult> Post([FromBody] Coupon coupon)
     {
-        await _repository.CreateDiscount(coupon);
-        return CreatedAtAction("GetDiscount", new { productName = coupon.ProductName});
+       var r =  await _repository.CreateDiscount(coupon);
+        return CreatedAtAction("GetDiscount", new { productName = coupon.ProductName},coupon);
     }
 
     [HttpPut(Name ="UpdateDiscount")]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
     public async Task<IActionResult> Put([FromBody] Coupon coupon)
         => Ok(await _repository.UpdateDiscount(coupon));
 
     [HttpDelete("{productName}",Name ="DeleteDiscount")]
+    [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(string productName)
         => Ok(await _repository.DeleteDiscount(productName));
 }

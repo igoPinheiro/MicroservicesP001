@@ -18,7 +18,7 @@ public class DiscountRepository : IDiscountRepository
         using NpgsqlConnection connection = GetConnectionPostgreSQL();
 
         var affected = await connection.ExecuteAsync(
-            "INSERT INTO Coupon (ProductName, Description, Amount)" +
+            "INSERT INTO Coupon (ProductName, Description, Amount) " +
             "VALUES (@ProductName,@Description,@Amount)",
             new {ProductName = coupon.ProductName,
                  Description = coupon.Description,
@@ -33,7 +33,7 @@ public class DiscountRepository : IDiscountRepository
         using NpgsqlConnection connection = GetConnectionPostgreSQL();
 
         var affected = await connection.ExecuteAsync(
-            "DELETE FROM Coupon" +
+            "DELETE FROM Coupon " +
             "WHERE ProductName = @ProductName",
             new
             {
@@ -63,8 +63,8 @@ public class DiscountRepository : IDiscountRepository
         var affected = await connection.ExecuteAsync(
             "UPDATE Coupon SET ProductName = @ProductName," +
             "           Description = @Description," +
-            "           Amount = @Amount" +
-            "WHERE Id = @Id",
+            "           Amount = @Amount " +
+            " WHERE Id = @Id",
             new
             {
                 ProductName = coupon.ProductName,
